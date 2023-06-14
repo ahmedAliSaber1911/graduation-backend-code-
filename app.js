@@ -8,6 +8,8 @@ const reviewsRouter = require("./routes/reviewRouter");
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorControlllers");
 const viewRouter = require("./routes/viewRoutes");
+var cors = require('cors')
+
 require('dotenv').config();
 // express is function
 const app = express();
@@ -23,6 +25,7 @@ if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
 
+app.use(cors())
 app.use(express.json());
 
 app.use(express.static(path.join(__dirname, "public")));
