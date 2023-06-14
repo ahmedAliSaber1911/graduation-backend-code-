@@ -5,4 +5,3 @@ async function main() {
     console.log("connected to database successfully ✅✅✅✅");
   }
   main().catch(err => console.log(err));
-  

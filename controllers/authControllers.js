@@ -39,15 +39,29 @@ user.password=undefined
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
-  const newUser = await User.create({
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password,
-    passwordConfirm: req.body.passwordConfirm,
-    passwordChangedAt: req.body.passwordChangedAt,
-    city: req.body.city,
-    role: req.body.role,
-  });
+  console.log(req.body, 'request')
+  let newUser
+  try{
+
+    newUser = await User.create({
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.password,
+      passwordConfirm: req.body.passwordConfirm,
+      passwordChangedAt: req.body.passwordChangedAt,
+      city: req.body.city,
+      role: req.body.role,
+    });
+
+    console.log(newUser, 'new user')
+  }catch (error){
+    console.log(error, 'error')
+   return res.status(400).json({
+      status: 'error',
+      error
+    });
+  }
+
 
   const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
@@ -55,7 +69,7 @@ exports.signup = catchAsync(async (req, res, next) => {
 
   // const token =signToken(newUser._id)
 
-  res.status(200).json({
+  return res.status(200).json({
     status: 'success',
     token,
     data: {
