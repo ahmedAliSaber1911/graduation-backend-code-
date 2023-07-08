@@ -8,6 +8,7 @@ const reviewsRouter = require("./routes/reviewRouter");
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorControlllers");
 const viewRouter = require("./routes/viewRoutes");
+const GovernorRouter=require('./routes/GovernorRouters')
 var cors = require('cors')
 
 require('dotenv').config();
@@ -18,7 +19,8 @@ app.set("views", path.join(__dirname, "views"));
 
 // Serving static files
 app.use(express.static(path.join(__dirname, "public")));
-
+app.use('/api/v1/TravelPackages',PackageRouter)
+app.use('/api/v1/Governor',GovernorRouter)
 // 1) first middlewares
 
 if (process.env.NODE_ENV === "development") {
@@ -43,6 +45,12 @@ app.use((req, res, next) => {
   next();
 });
 
+
+app.get("/recommend/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  const recommendations = await recommend(userId);
+  res.json(recommendations);
+});
 ////////////////////////////////////////////////////////////////////////////
 
 //2) ROUTE HANDLERS

@@ -24,7 +24,7 @@ const reviewSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.ObjectId,
       ref: 'User',
-      required: [true, 'Review must belong to a user.'],
+      // required: [true, 'Review must belong to a user.'],
     },
   },
   {
@@ -79,8 +79,8 @@ reviewSchema.pre(/^findByIdAnd/,async function(next){
 });
 
 reviewSchema.post(/^findByIdAnd/,async function(next){
- 
-  // await this.findOne(); does NOT work here,query has already executed 
+
+  // await this.findOne(); does NOT work here,query has already executed
 
 
   await this.r.constructor.calcAverageRatings(this.r.tour)

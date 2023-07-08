@@ -39,7 +39,6 @@ user.password=undefined
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
-  console.log(req.body, 'request')
   let newUser
   try{
 
@@ -48,14 +47,12 @@ exports.signup = catchAsync(async (req, res, next) => {
       email: req.body.email,
       password: req.body.password,
       passwordConfirm: req.body.passwordConfirm,
-      passwordChangedAt: req.body.passwordChangedAt,
+      // passwordChangedAt: req.body.passwordChangedAt,
       city: req.body.city,
       role: req.body.role,
     });
 
-    console.log(newUser, 'new user')
   }catch (error){
-    console.log(error, 'error')
    return res.status(400).json({
       status: 'error',
       error
@@ -82,15 +79,28 @@ exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
   // 1) Check if email and password exist
-  if (!email || !password) {
-    return next(new AppError('Please provide email and password ', 404));
-  }
-  // 2) check if user exist && password is correct
-  const user = await User.findOne({ email: email }).select('+password');
+  console.log(email , password)
 
-  if (!user || !(await user.correctPassword(password, user.password))) {
-    return next(new AppError('incorrect email or password ', 400));
-  }
+  try {
+    if (!email || !password) {
+      throw new AppError("Please provide email and password", 400);
+    }
+
+    // Check if the user exists and the password is correct
+    const user = await User.findOne({ email }).select("+password");
+
+    if (!user || !(await user.correctPassword(password, user.password))) {
+      throw new AppError("Incorrect email or password", 401);
+    }
+
+    // Authentication successful
+    // Proceed with further actions (e.g., generating a token, creating a session, etc.)
+
+    res.status(200).json({ message: "Login successful" });
+  } catch (error) {
+    // Handle errors
+    next(error);
+  }
   // 3) if everything ok , send token to cleint
 
   const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {

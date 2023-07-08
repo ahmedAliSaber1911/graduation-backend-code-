@@ -9,12 +9,12 @@ const authController = require('./../controllers/authControllers');
 const router = express.Router({ mergeParams: true });
 
 // only user should be able post reviews no admin and guide-lead
-router.use(authController.protect);
+
 router
   .route('/')
   .get(reviewsController.GetAllReviews)
   .post(
-    authController.restrictTo('user'),
+
     reviewsController.setTourUserIds,
     reviewsController.createReviews
   );

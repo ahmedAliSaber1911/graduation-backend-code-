@@ -62,6 +62,7 @@ const tourSchema = new mongoose.Schema(
       required: [true, 'A tour must have a description'],
     },
     description: {
+
       type: String,
       trim: true,
     },
@@ -134,7 +135,7 @@ tourSchema.virtual('durationWeeks').get(function () {
 // })
 
 
-// Virtual populate 
+// Virtual populate
 tourSchema.virtual('reviews',{
   ref:"Review",
   foreignField:'tour',
@@ -169,7 +170,7 @@ tourSchema.pre(/^find/, function (next) {
 });
 
 tourSchema.pre(/^find/,function (next){
-  
+
   this.populate({
     path: 'guides',
    select:'-__v -passwordChangedAt'
